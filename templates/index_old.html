@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clinical Protocol Auditor — Apexon</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0D2240; --navy-mid:#1A3A5C; --teal:#0E7490; --teal-light:#06B6D4;
+  --teal-glow:rgba(6,182,212,0.12); --white:#FFFFFF; --slate:#94A3B8;
+  --text:#CBD5E1; --critical:#F87171; --major:#FBBF24; --minor:#34D399;
+  --card:rgba(26,58,92,0.5); --border:rgba(6,182,212,0.18); --offwhite:#F8FAFC;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:var(--navy);color:var(--text);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 15%,rgba(14,116,144,0.14) 0%,transparent 55%),radial-gradient(ellipse at 85% 85%,rgba(6,182,212,0.07) 0%,transparent 50%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(6,182,212,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(6,182,212,0.025) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 24px;}
+
+header{border-bottom:1px solid var(--border);backdrop-filter:blur(20px);background:rgba(13,34,64,0.85);position:sticky;top:0;z-index:100;}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1080px;margin:0 auto;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-mark{width:34px;height:34px;background:linear-gradient(135deg,var(--teal),var(--teal-light));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.logo-name{font-weight:700;font-size:14px;color:var(--white);letter-spacing:.05em;}
+.logo-sub{font-size:10px;color:var(--slate);letter-spacing:.08em;text-transform:uppercase;}
+.stack-pills{display:flex;gap:6px;}
+.pill{padding:4px 10px;border:1px solid var(--border);border-radius:4px;font-size:11px;color:var(--teal-light);font-family:'DM Mono',monospace;}
+
+.hero{padding:48px 0 32px;text-align:center;}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;padding:5px 16px;border:1px solid var(--border);border-radius:20px;font-size:11px;color:var(--teal-light);letter-spacing:.1em;text-transform:uppercase;margin-bottom:18px;background:var(--teal-glow);}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(32px,5vw,48px);color:var(--white);line-height:1.15;margin-bottom:12px;letter-spacing:-.02em;}
+.hero h1 em{font-style:italic;color:var(--teal-light);}
+.hero p{font-size:15px;color:var(--slate);max-width:500px;margin:0 auto 32px;line-height:1.75;font-weight:300;}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:36px;}
+.stat{background:var(--card);padding:16px;text-align:center;}
+.stat-val{font-family:'DM Serif Display',serif;font-size:24px;color:var(--teal-light);display:block;margin-bottom:2px;}
+.stat-lbl{font-size:11px;color:var(--slate);text-transform:uppercase;letter-spacing:.06em;}
+
+/* Sources panel */
+.sources{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:18px;}
+.sources-title{font-size:11px;color:var(--teal-light);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;}
+.sources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.source{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;background:rgba(6,182,212,0.06);border:1px solid var(--border);border-radius:8px;}
+.source-icon{font-size:18px;flex-shrink:0;}
+.source-name{font-size:12px;font-weight:600;color:var(--white);margin-bottom:2px;}
+.source-meta{font-size:11px;color:var(--slate);}
+.tag{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:600;margin-top:3px;display:inline-block;}
+.tag-protocol{background:rgba(6,182,212,0.15);color:var(--teal-light);}
+.tag-regulatory{background:rgba(52,211,153,0.12);color:var(--minor);}
+.tag-rules{background:rgba(124,58,237,0.15);color:#A78BFA;}
+
+/* Upload */
+.upload-zone{border:2px dashed var(--border);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all .3s;background:var(--card);margin-bottom:14px;}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--teal-light);background:var(--teal-glow);}
+.upload-icon{width:44px;height:44px;background:linear-gradient(135deg,var(--teal),var(--teal-light));border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:20px;}
+.upload-title{font-size:15px;font-weight:600;color:var(--white);margin-bottom:4px;}
+.upload-sub{font-size:12px;color:var(--slate);margin-bottom:14px;}
+.browse-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;background:linear-gradient(135deg,var(--teal),var(--teal-light));color:white;border:none;border-radius:7px;font-size:13px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;}
+#fileInput{display:none;}
+.file-bar{display:none;align-items:center;gap:10px;padding:12px 16px;background:rgba(6,182,212,0.08);border:1px solid var(--border);border-radius:9px;margin-bottom:14px;}
+.file-bar.show{display:flex;}
+.file-name{font-size:13px;color:var(--white);font-weight:500;}
+.file-meta{font-size:11px;color:var(--slate);}
+
+/* Run button */
+.run-row{display:flex;gap:10px;margin-bottom:28px;}
+.run-btn{flex:1;padding:16px 24px;background:linear-gradient(135deg,var(--teal),var(--teal-light));color:white;border:none;border-radius:11px;font-size:15px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:9px;}
+.run-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 36px rgba(6,182,212,0.4);}
+.run-btn:disabled{opacity:.6;cursor:not-allowed;}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.run-btn.loading .spinner{display:block;}
+.clr-btn{padding:16px 20px;background:transparent;color:var(--slate);border:1px solid var(--border);border-radius:11px;font-size:13px;font-family:'Outfit',sans-serif;cursor:pointer;transition:all .2s;}
+.clr-btn:hover{border-color:var(--teal-light);color:var(--teal-light);}
+
+/* Agent panel */
+.agent-panel{display:none;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:24px;}
+.agent-panel.show{display:block;}
+.agent-hdr{display:flex;align-items:center;gap:9px;padding:12px 18px;background:rgba(6,182,212,0.06);border-bottom:1px solid var(--border);}
+.agent-title{font-size:12px;font-weight:600;color:var(--teal-light);letter-spacing:.05em;text-transform:uppercase;}
+.think-dots{display:flex;gap:3px;align-items:center;margin-left:auto;}
+.think-dot{width:5px;height:5px;background:var(--teal-light);border-radius:50%;animation:tp 1.2s ease-in-out infinite;}
+.think-dot:nth-child(2){animation-delay:.2s;}.think-dot:nth-child(3){animation-delay:.4s;}
+@keyframes tp{0%,100%{opacity:.3;transform:scale(.8);}50%{opacity:1;transform:scale(1.2);}}
+.prog-wrap{height:3px;background:rgba(255,255,255,0.05);}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-light));width:0%;transition:width .8s ease;}
+.feed{padding:14px 18px;min-height:140px;max-height:200px;overflow-y:auto;font-family:'DM Mono',monospace;font-size:12px;}
+.feed::-webkit-scrollbar{width:3px;}.feed::-webkit-scrollbar-thumb{background:var(--border);}
+.aline{display:flex;align-items:flex-start;gap:9px;padding:4px 0;opacity:0;animation:li .4s ease forwards;border-bottom:1px solid rgba(255,255,255,0.03);}
+.aline:last-child{border-bottom:none;}
+@keyframes li{from{opacity:0;transform:translateX(-6px);}to{opacity:1;transform:translateX(0);}}
+.at{color:var(--slate);font-size:10px;white-space:nowrap;margin-top:1px;}
+.ai{font-size:13px;flex-shrink:0;}
+.ax{color:var(--text);line-height:1.5;}
+.ax.hi{color:var(--teal-light);}.ax.ok{color:var(--minor);}.ax.wa{color:var(--major);}.ax.er{color:var(--critical);}
+
+/* Results */
+.results{display:none;}.results.show{display:block;}
+.exec-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:24px;position:relative;overflow:hidden;}
+.exec-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),var(--teal-light),var(--teal));}
+.exec-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:14px;flex-wrap:wrap;}
+.exec-h{font-family:'DM Serif Display',serif;font-size:20px;color:var(--white);margin-bottom:3px;}
+.exec-sub{font-size:11px;color:var(--slate);font-family:'DM Mono',monospace;}
+.exec-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.total-pill{padding:6px 16px;background:linear-gradient(135deg,var(--teal),var(--teal-light));border-radius:20px;font-size:13px;font-weight:700;color:white;}
+.export-btn{padding:6px 14px;background:transparent;border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--teal-light);cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;}
+.export-btn:hover{border-color:var(--teal-light);background:var(--teal-glow);}
+.sev-pills{display:flex;gap:7px;flex-wrap:wrap;}
+.sp{padding:4px 13px;border-radius:20px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px;}
+.sp-c{background:rgba(248,113,113,.12);color:var(--critical);border:1px solid rgba(248,113,113,.25);}
+.sp-m{background:rgba(251,191,36,.12);color:var(--major);border:1px solid rgba(251,191,36,.25);}
+.sp-n{background:rgba(52,211,153,.12);color:var(--minor);border:1px solid rgba(52,211,153,.25);}
+
+.cat-block{margin-bottom:24px;animation:fu .5s ease forwards;opacity:0;}
+@keyframes fu{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.cat-hdr{display:flex;align-items:center;gap:10px;padding:12px 20px;border-radius:10px 10px 0 0;border:1px solid var(--border);border-bottom:none;}
+.cat-a .cat-hdr{background:rgba(248,113,113,.07);border-color:rgba(248,113,113,.22);}
+.cat-b .cat-hdr{background:rgba(251,191,36,.07);border-color:rgba(251,191,36,.22);}
+.cat-c .cat-hdr{background:rgba(52,211,153,.07);border-color:rgba(52,211,153,.22);}
+.cat-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;font-family:'DM Mono',monospace;}
+.cat-a .cat-icon{background:rgba(248,113,113,.2);color:var(--critical);}
+.cat-b .cat-icon{background:rgba(251,191,36,.2);color:var(--major);}
+.cat-c .cat-icon{background:rgba(52,211,153,.2);color:var(--minor);}
+.cat-name{font-size:13px;font-weight:700;color:var(--white);letter-spacing:.04em;text-transform:uppercase;}
+.cat-count{font-size:11px;margin-left:auto;opacity:.7;}
+.cat-a .cat-count{color:var(--critical);}.cat-b .cat-count{color:var(--major);}.cat-c .cat-count{color:var(--minor);}
+.findings-wrap{border:1px solid var(--border);border-radius:0 0 10px 10px;overflow:hidden;}
+.cat-a .findings-wrap{border-color:rgba(248,113,113,.22);}
+.cat-b .findings-wrap{border-color:rgba(251,191,36,.22);}
+.cat-c .findings-wrap{border-color:rgba(52,211,153,.22);}
+.finding{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.04);background:var(--card);transition:background .2s;}
+.finding:last-child{border-bottom:none;}
+.finding:hover{background:rgba(26,58,92,.8);}
+.f-hdr{display:flex;align-items:center;gap:9px;margin-bottom:9px;flex-wrap:wrap;}
+.f-id{font-family:'DM Mono',monospace;font-size:11px;color:var(--slate);background:rgba(255,255,255,.05);padding:2px 7px;border-radius:4px;}
+.sev-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;}
+.st-c{background:rgba(248,113,113,.15);color:var(--critical);}
+.st-m{background:rgba(251,191,36,.15);color:var(--major);}
+.st-n{background:rgba(52,211,153,.15);color:var(--minor);}
+.f-title{font-size:13px;font-weight:600;color:var(--white);flex:1;}
+.f-loc{font-size:11px;color:var(--teal-light);font-family:'DM Mono',monospace;background:var(--teal-glow);padding:2px 8px;border-radius:4px;}
+.f-body{font-size:12px;color:var(--text);line-height:1.65;margin-bottom:8px;}
+.f-ref{display:flex;align-items:flex-start;gap:7px;font-size:11px;color:var(--slate);padding:6px 11px;background:rgba(255,255,255,.03);border-radius:5px;border-left:3px solid var(--teal);margin-bottom:6px;}
+.f-action{display:flex;align-items:flex-start;gap:7px;font-size:11px;color:var(--minor);padding:6px 11px;background:rgba(52,211,153,.05);border-radius:5px;border-left:3px solid var(--minor);}
+.f-evidence{display:flex;align-items:flex-start;gap:7px;font-size:11px;color:var(--slate);padding:6px 11px;background:rgba(255,255,255,.02);border-radius:5px;border-left:3px solid var(--slate);margin-bottom:6px;font-style:italic;}
+
+
+/* Robot animation */
+.robot-wrap{display:none;text-align:center;padding:20px 0 8px;}
+.robot-wrap.show{display:block;}
+.robot{font-size:48px;display:inline-block;animation:robotWork 1s ease-in-out infinite;}
+@keyframes robotWork{0%,100%{transform:translateY(0) rotate(-3deg);}50%{transform:translateY(-8px) rotate(3deg);}}
+.robot-status{font-size:13px;color:var(--teal-light);margin-top:6px;font-family:"DM Mono",monospace;}
+.robot-rule{font-size:11px;color:var(--slate);margin-top:3px;font-family:"DM Mono",monospace;}
+
+
+/* Rule checklist */
+.rule-checklist{display:none;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:24px;}
+.rule-checklist.show{display:block;}
+.rc-hdr{display:flex;align-items:center;gap:9px;padding:12px 18px;background:rgba(6,182,212,0.06);border-bottom:1px solid var(--border);}
+.rc-title{font-size:12px;font-weight:600;color:var(--teal-light);letter-spacing:.05em;text-transform:uppercase;}
+.rc-progress{margin-left:auto;font-size:11px;color:var(--slate);font-family:"DM Mono",monospace;}
+.rc-list{padding:10px 16px;max-height:280px;overflow-y:auto;}
+.rc-list::-webkit-scrollbar{width:3px;}.rc-list::-webkit-scrollbar-thumb{background:var(--border);}
+.rc-item{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.03);animation:li .3s ease forwards;opacity:0;}
+.rc-item:last-child{border-bottom:none;}
+.rc-status{font-size:14px;flex-shrink:0;width:20px;text-align:center;}
+.rc-id{font-family:"DM Mono",monospace;font-size:10px;color:var(--slate);width:140px;flex-shrink:0;}
+.rc-sev{font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;flex-shrink:0;}
+.rc-sev.st-c{background:rgba(248,113,113,.15);color:var(--critical);}
+.rc-sev.st-m{background:rgba(251,191,36,.15);color:var(--major);}
+.rc-sev.st-n{background:rgba(52,211,153,.15);color:var(--minor);}
+.rc-finding{font-size:11px;color:var(--slate);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rc-result{font-size:10px;font-weight:700;margin-left:auto;flex-shrink:0;}
+.rc-result.fail{color:var(--critical);}
+.rc-result.pass{color:var(--minor);}
+.rc-result.manual{color:var(--major);}
+
+.err-box{padding:16px 20px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;color:var(--critical);font-size:13px;display:none;margin-bottom:20px;}
+.err-box.show{display:block;}
+
+footer{margin-top:64px;padding:24px 0;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.f-left{font-size:11px;color:var(--slate);}
+.f-right{display:flex;gap:6px;flex-wrap:wrap;}
+.f-badge{padding:3px 9px;border:1px solid var(--border);border-radius:4px;font-size:10px;color:var(--teal-light);font-family:'DM Mono',monospace;}
+</style>
+</head>
+<body>
+<header>
+  <div class="hdr">
+    <div class="logo">
+      <div class="logo-mark">⚕</div>
+      <div>
+        <div class="logo-name">APEXON</div>
+        <div class="logo-sub">Venkatesh Reddy Valluri, AI Solution Architect · AI Solution Architecture</div>
+      </div>
+    </div>
+    <div class="stack-pills">
+      <span class="pill">LangChain</span>
+      <span class="pill">ChromaDB</span>
+      <span class="pill">Groq</span>
+      <span class="pill">ICH E6(R3)</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">⚕ Open Source Regulatory Intelligence</div>
+    <h1>Agentic Clinical<br><em>Protocol Auditor</em></h1>
+    <p>Checks 18 explicit audit rules against ICH E6(R3) and FDA guidance. Deterministic output — same rules checked every run.</p>
+    <div class="stats">
+      <div class="stat"><span class="stat-val">18</span><span class="stat-lbl">Rules checked every run</span></div>
+      <div class="stat"><span class="stat-val">3</span><span class="stat-lbl">Knowledge sources</span></div>
+      <div class="stat"><span class="stat-val">100%</span><span class="stat-lbl">Local embeddings</span></div>
+    </div>
+  </div>
+
+  <div class="sources">
+    <div class="sources-title">🧠 Pre-loaded knowledge sources — permanent, never need uploading</div>
+    <div class="sources-grid">
+      <div class="source">
+        <div class="source-icon">📋</div>
+        <div>
+          <div class="source-name">ICH E6(R3) GCP Guidelines</div>
+          <div class="source-meta">697 vectors · EMA · July 2025 · ChromaDB</div>
+          <span class="tag tag-regulatory">Always loaded ✓</span>
+        </div>
+      </div>
+      <div class="source">
+        <div class="source-icon">📋</div>
+        <div>
+          <div class="source-name">FDA IND Guidance</div>
+          <div class="source-meta">Included in regulatory KB · FDA CDER</div>
+          <span class="tag tag-regulatory">Always loaded ✓</span>
+        </div>
+      </div>
+      <div class="source">
+        <div class="source-icon">📐</div>
+        <div>
+          <div class="source-name">18 Audit Rules Store</div>
+          <div class="source-meta">ICH + FDA rules · versioned JSON</div>
+          <span class="tag tag-rules">Always loaded ✓</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+    <div class="upload-icon">📄</div>
+    <div class="upload-title">Upload Your Clinical Protocol PDF</div>
+    <div class="upload-sub">Each team uploads their own protocol · Regulatory guidelines stay pre-loaded · PDF · Up to 50MB</div>
+    <button class="browse-btn" onclick="event.stopPropagation();document.getElementById('fileInput').click()">📂 Browse</button>
+    <input type="file" id="fileInput" accept=".pdf" onchange="handleFile(this)">
+  </div>
+  <div class="file-bar show" id="fileBar">
+    <span>📄</span>
+    <div>
+      <div class="file-name" id="fileName">clinical_protocol_hepatitis_b.pdf</div>
+      <div class="file-meta">Pre-loaded · 1.56 MB · Phase 2/3 Hepatitis B Study · Ready</div>
+    </div>
+  </div>
+
+  <div class="run-row">
+    <button class="run-btn" id="runBtn" onclick="runAudit()">
+      <div class="spinner"></div>
+      <span id="btnText">🔍 Run Full Protocol Audit</span>
+    </button>
+    <button class="clr-btn" onclick="clearAll()">Clear</button>
+  </div>
+
+  <div class="agent-panel" id="agentPanel">
+    <div class="agent-hdr">
+      <span style="font-size:15px">🤖</span>
+      <span class="agent-title">Agent activity — live reasoning trace</span>
+      <div class="think-dots" id="thinkDots">
+        <div class="think-dot"></div><div class="think-dot"></div><div class="think-dot"></div>
+        <span style="margin-left:6px;font-size:11px;color:var(--slate)">Checking rules...</span>
+      </div>
+    </div>
+    <div class="prog-wrap"><div class="prog-fill" id="progFill"></div></div>
+    <div class="feed" id="feed"></div>
+  </div>
+
+  <div class="robot-wrap" id="robotWrap">
+    <div class="robot">🤖</div>
+    <div class="robot-status" id="robotStatus">Initialising audit engine...</div>
+    <div class="robot-rule" id="robotRule">Loading knowledge bases</div>
+  </div>
+  <div class="rule-checklist" id="ruleChecklist">
+    <div class="rc-hdr">
+      <span style="font-size:15px">📋</span>
+      <span class="rc-title">Rule execution trace</span>
+      <span class="rc-progress" id="rcProgress">0 / 18 rules checked</span>
+    </div>
+    <div class="rc-list" id="rcList"></div>
+  </div>
+  <div class="err-box" id="errBox"></div>
+
+  <div class="results" id="results">
+    <div class="exec-card" id="execCard"></div>
+    <div id="catsContainer"></div>
+  </div>
+
+  <footer>
+    <div class="f-left">© 2026 Apexon · Venkatesh Reddy Valluri, AI Solution Architect · AI Solution Architecture · Clinical Protocol Auditor OSS</div>
+    <div class="f-right">
+      <span class="f-badge">LangChain</span>
+      <span class="f-badge">ChromaDB</span>
+      <span class="f-badge">Groq llama-3.3-70b</span>
+      <span class="f-badge">ICH E6(R3)</span>
+      <span class="f-badge">FDA IND</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+let currentAuditId = null;
+let t0;
+const ts = () => ((Date.now()-t0)/1000).toFixed(1)+'s';
+
+// Drag and drop
+const uz = document.getElementById('uploadZone');
+uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('drag-over');});
+uz.addEventListener('dragleave',()=>uz.classList.remove('drag-over'));
+uz.addEventListener('drop',e=>{e.preventDefault();uz.classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f&&f.type==='application/pdf')showFile(f.name,(f.size/1024/1024).toFixed(2)+'MB');});
+function handleFile(i){if(i.files&&i.files[0]){const f=i.files[0];showFile(f.name,(f.size/1024/1024).toFixed(2)+'MB');}}
+function showFile(n,s){document.getElementById('fileName').textContent=n;document.querySelector('#fileBar .file-meta').textContent=s+' · Ready';document.getElementById('fileBar').classList.add('show');}
+
+function clearAll(){
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('agentPanel').classList.remove('show');
+  document.getElementById('errBox').classList.remove('show');
+  document.getElementById('feed').innerHTML='';
+  document.getElementById('progFill').style.width='0%';
+  document.getElementById('execCard').innerHTML='';
+  document.getElementById('catsContainer').innerHTML='';
+  document.getElementById('thinkDots').style.display='flex';
+  document.getElementById('robotWrap').classList.remove('show');
+  document.getElementById('ruleChecklist').classList.remove('show');
+  document.getElementById('rcList').innerHTML='';
+  document.getElementById('rcProgress').textContent='0 / 18 rules checked';
+  currentAuditId=null;
+}
+
+function addLine(icon,text,cls=''){
+  const feed=document.getElementById('feed');
+  const d=document.createElement('div');d.className='aline';
+  d.innerHTML=`<span class="at">${ts()}</span><span class="ai">${icon}</span><span class="ax ${cls}">${text}</span>`;
+  feed.appendChild(d);feed.scrollTop=feed.scrollHeight;
+}
+function setProg(p){document.getElementById('progFill').style.width=p+'%';}
+
+async function runAudit(){
+  const btn=document.getElementById('runBtn');
+  btn.classList.add('loading');btn.disabled=true;
+  document.getElementById('btnText').textContent='Agent running...';
+  document.getElementById('feed').innerHTML='';
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('errBox').classList.remove('show');
+  document.getElementById('agentPanel').classList.add('show');
+  document.getElementById('progFill').style.width='0%';
+  document.getElementById('thinkDots').style.display='flex';
+  document.getElementById('robotWrap').classList.add('show');
+  document.getElementById('robotStatus').textContent='Initialising audit engine...';
+  document.getElementById('robotRule').textContent='Loading knowledge bases';
+  t0=Date.now();
+
+  const formData=new FormData();
+  const fileInput=document.getElementById('fileInput');
+  if(fileInput.files&&fileInput.files[0]) formData.append('protocol',fileInput.files[0]);
+
+  try{
+    const resp=await fetch('/audit',{method:'POST',body:formData});
+    if(!resp.ok) throw new Error('Server error: '+resp.status);
+    const reader=resp.body.getReader();
+    const decoder=new TextDecoder();
+    let buf='';
+
+    while(true){
+      const{done,value}=await reader.read();
+      if(done) break;
+      buf+=decoder.decode(value,{stream:true});
+      const lines=buf.split('\n');
+      buf=lines.pop();
+      for(const line of lines){
+        if(!line.startsWith('data:')) continue;
+        const payload=JSON.parse(line.slice(5).trim());
+        if(payload.type==='progress'){
+          const icons=['🚀','📚','📐','🧠','✅'];
+          const statuses=['Starting up...','Loading KBs...','Retrieving rules...','Reasoning across sources...','Generating report...'];
+          addLine(icons[payload.step-1]||'🔍',payload.message,'hi');
+          setProg(payload.step*18);
+          document.getElementById('robotStatus').textContent=statuses[payload.step-1]||'Working...';
+          document.getElementById('robotRule').textContent=payload.message;
+          if(payload.step===4) document.getElementById('ruleChecklist').classList.add('show');
+        }
+        if(payload.type==='rule_result'){
+          const r=payload;
+          const sevCls=r.severity==='Critical'?'st-c':r.severity==='Major'?'st-m':'st-n';
+          const icon=r.status==='PASS'?'✅':r.status==='FAIL'?'❌':r.status==='MANUAL_REVIEW'?'🔍':'⚠️';
+          const resCls=r.status==='PASS'?'pass':r.status==='MANUAL_REVIEW'?'manual':'fail';
+          const li=document.createElement('div');
+          li.className='rc-item';
+          li.innerHTML=`<span class="rc-status">${icon}</span><span class="rc-id">${r.rule_id}</span><span class="rc-sev ${sevCls}">${r.severity}</span><span class="rc-finding">${r.finding||'No issue found'}</span><span class="rc-result ${resCls}">${r.status}</span>`;
+          const list=document.getElementById('rcList');
+          list.appendChild(li);
+          list.scrollTop=list.scrollHeight;
+          document.getElementById('rcProgress').textContent=`${r.index} / ${r.total} rules checked`;
+        }
+        if(payload.type==='error'){
+          document.getElementById('errBox').textContent='⚠ '+payload.message;
+          document.getElementById('errBox').classList.add('show');
+        }
+        if(payload.type==='done'){
+          setProg(100);
+          addLine('✅',`Audit complete — ${payload.summary.total} findings in ${ts()}`,'ok');
+          document.getElementById('thinkDots').style.display='none';
+          document.getElementById('robotWrap').classList.remove('show');
+          currentAuditId=payload.audit_id;
+          await new Promise(r=>setTimeout(r,400));
+          document.getElementById('results').classList.add('show');
+          renderReport(payload);
+        }
+      }
+    }
+  }catch(e){
+    addLine('❌','Error: '+e.message,'er');
+    document.getElementById('errBox').textContent='⚠ '+e.message;
+    document.getElementById('errBox').classList.add('show');
+  }finally{
+    btn.classList.remove('loading');btn.disabled=false;
+    document.getElementById('btnText').textContent='🔍 Run Full Protocol Audit';
+  }
+}
+
+function sevClass(s){
+  if(!s) return 'st-n';
+  const l=s.toLowerCase();
+  if(l.includes('critical')) return 'st-c';
+  if(l.includes('major')) return 'st-m';
+  return 'st-n';
+}
+
+function renderReport(data){
+  const{summary,findings,audit_id,timestamp,rules_checked,passes}=data;
+  const fails=findings.filter(f=>f.status==='FAIL');
+
+  document.getElementById('execCard').innerHTML=`
+    <div class="exec-top">
+      <div>
+        <div class="exec-h">Clinical Protocol Audit Report</div>
+        <div class="exec-sub">ID: ${audit_id} · ${timestamp} · ${rules_checked} rules checked · ${passes} passed</div>
+      </div>
+      <div class="exec-actions">
+        <div class="total-pill">${summary.total} Findings</div>
+        <button class="export-btn" onclick="exportPDF('${audit_id}')">⬇ Export PDF</button>
+      </div>
+    </div>
+    <div class="sev-pills">
+      <div class="sp sp-c">🔴 Critical: ${summary.critical}</div>
+      <div class="sp sp-m">🟡 Major: ${summary.major}</div>
+      <div class="sp sp-n">🟢 Minor: ${summary.minor}</div>
+      ${summary.manual>0?`<div class="sp" style="background:rgba(251,191,36,.12);color:var(--major);border:1px solid rgba(251,191,36,.25)">🔍 Manual Review: ${summary.manual}</div>`:''}
+    </div>`;
+
+  const cats={A:[],B:[],C:[]};
+  for(const f of fails) if(cats[f.rule_id?.charAt(0)||'B']) cats[f.rule_id?.charAt(0)||'B'].push(f);
+  // Fallback: distribute by rule_id prefix
+  for(const f of fails){
+    const cat=f.rule_id?.includes('-A-')?'A':f.rule_id?.includes('-B-')?'B':'C';
+    if(!cats[cat].includes(f)) cats[cat].push(f);
+  }
+
+  const meta={A:{name:'Internal Inconsistencies',cls:'cat-a'},B:{name:'Regulatory Non-Compliance',cls:'cat-b'},C:{name:'Missing Mandatory Sections',cls:'cat-c'}};
+  let html='';let delay=0;
+  for(const[cat,list]of Object.entries(cats)){
+    if(!list.length) continue;
+    const m=meta[cat];
+    html+=`<div class="cat-block ${m.cls}" style="animation-delay:${delay}s">
+      <div class="cat-hdr"><div class="cat-icon">${cat}</div><div class="cat-name">Category ${cat}: ${m.name}</div><div class="cat-count">${list.length} finding${list.length>1?'s':''}</div></div>
+      <div class="findings-wrap">${list.map(f=>`
+        <div class="finding">
+          <div class="f-hdr">
+            <span class="f-id">${f.rule_id||'?'}</span>
+            <span class="sev-tag ${sevClass(f.severity)}">${f.severity||'Minor'}</span>
+            <span class="f-title">${(f.finding||'').substring(0,80)}${(f.finding||'').length>80?'…':''}</span>
+            ${f.location?`<span class="f-loc">📍 ${f.location.substring(0,36)}</span>`:''}
+          </div>
+          ${f.finding?`<div class="f-body">${f.finding}</div>`:''}
+          ${f.evidence?`<div class="f-evidence">📎 Evidence: ${f.evidence.substring(0,200)}</div>`:''}
+          ${f.regulatory_reference?`<div class="f-ref">📋 <strong>Regulatory:</strong>&nbsp;${f.regulatory_reference}</div>`:''}
+        </div>`).join('')}
+      </div></div>`;
+    delay+=0.12;
+  }
+  document.getElementById('catsContainer').innerHTML=html;
+}
+
+function exportPDF(auditId){
+  window.open(`/export/${auditId}`,'_blank');
+}
+</script>
+</body>
+</html>

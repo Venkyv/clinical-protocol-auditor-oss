@@ -1,0 +1,46 @@
+[
+  {
+    "rule_id": "FDA-IND-B-001",
+    "category": "B",
+    "severity": "Critical",
+    "requirement": "Protocol must include protocol version number and date on the title page",
+    "extract_instruction": "Find any text mentioning protocol version, version number, protocol date, amendment number, or document control information on the title page or header.",
+    "fail_conditions": ["no version number found anywhere in protocol", "no protocol date found", "title page missing version and date"],
+    "pass_conditions": ["version number present on title page", "protocol date present on title page"],
+    "regulatory_reference": "FDA IND Guidance — Protocol title page requirements",
+    "effective_date": "2024-01-01"
+  },
+  {
+    "rule_id": "FDA-IND-B-002",
+    "category": "B",
+    "severity": "Major",
+    "requirement": "Protocol must identify sponsor name, address, and contact information",
+    "extract_instruction": "Find any text mentioning sponsor name, sponsor address, sponsor contact, or sponsor details.",
+    "fail_conditions": ["no sponsor name found", "sponsor section missing address", "sponsor contact information absent"],
+    "pass_conditions": ["sponsor name present", "sponsor address and contact information provided"],
+    "regulatory_reference": "FDA 21 CFR 312.23(a)(6)(iii)",
+    "effective_date": "2024-01-01"
+  },
+  {
+    "rule_id": "FDA-IND-C-001",
+    "category": "C",
+    "severity": "Major",
+    "requirement": "Protocol must include stopping rules or discontinuation criteria",
+    "extract_instruction": "Find any text mentioning stopping rules, discontinuation criteria, withdrawal criteria, study stopping, or participant discontinuation.",
+    "fail_conditions": ["no stopping rules found", "no discontinuation criteria for participants", "study-level stopping rules absent"],
+    "pass_conditions": ["stopping rules present for individual participants", "study-level stopping criteria defined"],
+    "regulatory_reference": "FDA IND Guidance — Stopping rules",
+    "effective_date": "2024-01-01"
+  },
+  {
+    "rule_id": "FDA-IND-C-002",
+    "category": "C",
+    "severity": "Minor",
+    "requirement": "Protocol must include a statistical analysis plan or reference to a separate SAP",
+    "extract_instruction": "Find any text mentioning statistical analysis plan, SAP, statistical methods, analysis methodology, or reference to a separate statistical document.",
+    "fail_conditions": ["no statistical analysis plan or reference found", "statistical section absent from protocol"],
+    "pass_conditions": ["statistical analysis plan present or referenced", "statistical methods described adequately"],
+    "regulatory_reference": "FDA IND Guidance — Statistical analysis requirements",
+    "effective_date": "2024-01-01"
+  }
+]

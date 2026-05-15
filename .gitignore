@@ -1,0 +1,27 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Vector DB — large binary, rebuilt by ingest.py
+chroma_db/
+
+# Auto-generated at runtime
+uploads/
+monitoring/
+reports/
+findings_log.json
+audit_report*.txt
+
+# VS Code
+.vscode/
+
+# Qodo AI
+.qodo/
+
+# Temp folders
+-p/
