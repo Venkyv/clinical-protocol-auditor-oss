@@ -5,10 +5,32 @@
     "severity": "Critical",
     "requirement": "Protocol must define primary endpoint consistently throughout all sections",
     "extract_instruction": "Find ALL text in the protocol that defines or mentions the primary endpoint, primary outcome, or primary efficacy measure. Return every relevant passage.",
-    "fail_conditions": ["no primary endpoint definition found", "two or more sections define primary endpoint differently", "primary endpoint definitions are contradictory"],
-    "pass_conditions": ["primary endpoint defined clearly and consistently in all sections"],
+    "fail_conditions": [
+      "no primary endpoint definition found",
+      "two or more sections define primary endpoint differently",
+      "primary endpoint definitions are contradictory"
+    ],
+    "pass_conditions": [
+      "primary endpoint defined clearly and consistently in all sections"
+    ],
     "regulatory_reference": "ICH E6(R3) Annex 1 Section B.1",
-    "effective_date": "2025-07-23"
+    "effective_date": "2025-07-23",
+    "evidence_anchors": [
+      [
+        "primary endpoint",
+        "primary efficacy endpoint",
+        "primary outcome",
+        "primary objective"
+      ],
+      [
+        "is defined as",
+        "will be assessed",
+        "measured by",
+        "defined as",
+        "evaluated by",
+        "proportion of"
+      ]
+    ]
   },
   {
     "rule_id": "ICH-E6R3-A-002",
@@ -16,10 +38,38 @@
     "severity": "Major",
     "requirement": "Study population age range must be stated consistently across all sections",
     "extract_instruction": "Find ALL text mentioning age range, age criteria, age limit, or participant age in any section including abstract, synopsis, study population, and inclusion criteria.",
-    "fail_conditions": ["different age ranges stated in different sections", "age range in abstract differs from inclusion criteria", "age range missing from key sections"],
-    "pass_conditions": ["same age range stated consistently across all sections"],
+    "fail_conditions": [
+      "different age ranges stated in different sections",
+      "age range in abstract differs from inclusion criteria",
+      "age range missing from key sections"
+    ],
+    "pass_conditions": [
+      "same age range stated consistently across all sections"
+    ],
     "regulatory_reference": "ICH E6(R3) Section B.1",
-    "effective_date": "2025-07-23"
+    "effective_date": "2025-07-23",
+    "evidence_anchors": [
+      [
+        "years of age",
+        "years old",
+        "aged 18",
+        "aged between",
+        "age range",
+        "\u226518",
+        "\u2265 18",
+        ">= 18",
+        "18 to",
+        "18-"
+      ],
+      [
+        "inclusion criteri",
+        "eligible",
+        "enrol",
+        "participants aged",
+        "subjects aged",
+        "study population"
+      ]
+    ]
   },
   {
     "rule_id": "ICH-E6R3-A-003",
@@ -27,10 +77,31 @@
     "severity": "Major",
     "requirement": "Enrollment targets must be consistent between all protocol sections",
     "extract_instruction": "Find ALL text mentioning number of participants, sample size, enrollment target, number of subjects across all sections.",
-    "fail_conditions": ["different enrollment numbers in different sections", "enrollment target contradictory between sections"],
-    "pass_conditions": ["consistent enrollment number across all sections"],
+    "fail_conditions": [
+      "different enrollment numbers in different sections",
+      "enrollment target contradictory between sections"
+    ],
+    "pass_conditions": [
+      "consistent enrollment number across all sections"
+    ],
     "regulatory_reference": "ICH E6(R3) Section B.1",
-    "effective_date": "2025-07-23"
+    "effective_date": "2025-07-23",
+    "evidence_anchors": [
+      [
+        "participants",
+        "subjects",
+        "patients",
+        "volunteers"
+      ],
+      [
+        "will be enrolled",
+        "planned enrolment",
+        "sample size of",
+        "total of",
+        "approximately",
+        "up to"
+      ]
+    ]
   },
   {
     "rule_id": "ICH-E6R3-A-004",
@@ -38,10 +109,30 @@
     "severity": "Minor",
     "requirement": "Randomisation and blinding descriptions must be consistent across all sections",
     "extract_instruction": "Find ALL text mentioning randomisation, randomization, blinding, masking, open-label across all sections.",
-    "fail_conditions": ["blinding described differently in different sections", "study described as both blinded and open-label"],
-    "pass_conditions": ["randomisation and blinding described consistently", "no randomisation planned and stated consistently"],
+    "fail_conditions": [
+      "blinding described differently in different sections",
+      "study described as both blinded and open-label"
+    ],
+    "pass_conditions": [
+      "randomisation and blinding described consistently",
+      "no randomisation planned and stated consistently"
+    ],
     "regulatory_reference": "ICH E6(R3) Section B.6.3",
-    "effective_date": "2025-07-23"
+    "effective_date": "2025-07-23",
+    "evidence_anchors": [
+      [
+        "open-label",
+        "double-blind",
+        "single-blind",
+        "unblinded",
+        "randomised",
+        "randomized",
+        "no randomis",
+        "not randomis",
+        "no interim analysis",
+        "no sub-group"
+      ]
+    ]
   },
   {
     "rule_id": "ICH-E6R3-B-001",
@@ -49,10 +140,34 @@
     "severity": "Critical",
     "requirement": "Protocol must designate a qualified Medical Monitor with full contact information",
     "extract_instruction": "Find any text mentioning Medical Monitor, medical monitor designation, medical oversight, or sponsor medical contact. Return the exact text found.",
-    "fail_conditions": ["no mention of medical monitor", "medical monitor section contains placeholder like 'provide name' or 'TBD'", "medical monitor mentioned but no name or contact provided", "section blank or incomplete"],
-    "pass_conditions": ["medical monitor designated with specific name and contact information"],
+    "fail_conditions": [
+      "no mention of medical monitor",
+      "medical monitor section contains placeholder like 'provide name' or 'TBD'",
+      "medical monitor mentioned but no name or contact provided",
+      "section blank or incomplete"
+    ],
+    "pass_conditions": [
+      "medical monitor designated with specific name and contact information"
+    ],
     "regulatory_reference": "ICH E6(R3) Section 3.4",
-    "effective_date": "2025-07-23"
+    "effective_date": "2025-07-23",
+    "evidence_anchors": [
+      [
+        "medical monitor",
+        "medical officer",
+        "sponsor medical",
+        "qualified physician"
+      ],
+      [
+        "contact",
+        "telephone",
+        "email",
+        "phone",
+        "address",
+        "name",
+        "will be responsible"
+      ]
+    ]
   },
   {
     "rule_id": "ICH-E6R3-B-002",
@@ -60,10 +175,26 @@
     "severity": "Major",
     "requirement": "Protocol must reference the current Investigator Brochure or equivalent device document",
     "extract_instruction": "Find any text mentioning Investigator Brochure, IB, device information document, or investigational product documentation reference.",
-    "fail_conditions": ["no mention of Investigator Brochure anywhere", "investigational product section does not reference an IB"],
-    "pass_conditions": ["Investigator Brochure referenced with version or date", "equivalent device document referenced"],
+    "fail_conditions": [
+      "no mention of Investigator Brochure anywhere",
+      "investigational product section does not reference an IB"
+    ],
+    "pass_conditions": [
+      "Investigator Brochure referenced with version or date",
+      "equivalent device document referenced"
+    ],
     "regulatory_reference": "ICH E6(R3) Section B.1.3",
-    "effective_date": "2025-07-23"
+    "effective_date": "2025-07-23",
+    "evidence_anchors": [
+      [
+        "investigator brochure",
+        "investigator's brochure",
+        "ib version",
+        "current ib",
+        "edition of the ib",
+        "device information document"
+      ]
+    ]
   },
   {
     "rule_id": "ICH-E6R3-B-003",
@@ -71,10 +202,32 @@
     "severity": "Major",
     "requirement": "Protocol must include a formal risk-benefit assessment with justification",
     "extract_instruction": "Find any text mentioning risk-benefit, risks and benefits, potential risks, anticipated benefits, or risk justification.",
-    "fail_conditions": ["no risk-benefit assessment found", "risks mentioned but no benefit justification", "section contains only generic placeholder text"],
-    "pass_conditions": ["formal risk-benefit assessment present with supporting rationale"],
+    "fail_conditions": [
+      "no risk-benefit assessment found",
+      "risks mentioned but no benefit justification",
+      "section contains only generic placeholder text"
+    ],
+    "pass_conditions": [
+      "formal risk-benefit assessment present with supporting rationale"
+    ],
     "regulatory_reference": "ICH E6(R3) Principle 1.3",
-    "effective_date": "2025-07-23"
+    "effective_date": "2025-07-23",
+    "evidence_anchors": [
+      [
+        "risk",
+        "potential risk",
+        "known risk",
+        "identified risk",
+        "adverse effect"
+      ],
+      [
+        "benefit",
+        "anticipated benefit",
+        "potential benefit",
+        "clinical benefit",
+        "justif"
+      ]
+    ]
   },
   {
     "rule_id": "ICH-E6R3-B-004",
@@ -82,10 +235,37 @@
     "severity": "Critical",
     "requirement": "Protocol must specify adverse event and SAE reporting procedures and timelines",
     "extract_instruction": "Find any text mentioning adverse events, AE, serious adverse events, SAE, safety reporting, reporting timelines, or reporting procedures.",
-    "fail_conditions": ["no adverse event reporting procedures found", "AE section exists but no timelines specified", "no distinction between AE and SAE reporting"],
-    "pass_conditions": ["adverse event reporting procedures described with specific timelines", "SAE reporting requirements and timelines clearly stated"],
+    "fail_conditions": [
+      "no adverse event reporting procedures found",
+      "AE section exists but no timelines specified",
+      "no distinction between AE and SAE reporting"
+    ],
+    "pass_conditions": [
+      "adverse event reporting procedures described with specific timelines",
+      "SAE reporting requirements and timelines clearly stated"
+    ],
     "regulatory_reference": "ICH E6(R3) Section 2.7.2 and 3.13.2",
-    "effective_date": "2025-07-23"
+    "effective_date": "2025-07-23",
+    "evidence_anchors": [
+      [
+        "serious adverse event",
+        "sae",
+        "expedited report",
+        "unexpected serious"
+      ],
+      [
+        "within 24",
+        "within 7",
+        "within 15",
+        "calendar days",
+        "working days",
+        "24 hours",
+        "7 days",
+        "15 days",
+        "reporting timeline",
+        "reporting period"
+      ]
+    ]
   },
   {
     "rule_id": "ICH-E6R3-B-005",
@@ -93,10 +273,40 @@
     "severity": "Major",
     "requirement": "Sample size must be justified with statistical rationale including power calculation",
     "extract_instruction": "Find any text mentioning sample size justification, power calculation, statistical power, effect size, or sample size rationale.",
-    "fail_conditions": ["sample size stated but no statistical justification", "no power calculation found", "pilot study with no rationale for sample size"],
-    "pass_conditions": ["sample size justified with power calculation and effect size", "exploratory study with appropriate rationale explicitly stated"],
+    "fail_conditions": [
+      "sample size stated but no statistical justification",
+      "no power calculation found",
+      "pilot study with no rationale for sample size"
+    ],
+    "pass_conditions": [
+      "sample size justified with power calculation and effect size",
+      "exploratory study with appropriate rationale explicitly stated"
+    ],
     "regulatory_reference": "ICH E6(R3) Appendix B",
-    "effective_date": "2025-07-23"
+    "effective_date": "2025-07-23",
+    "evidence_anchors": [
+      [
+        "80% power",
+        "90% power",
+        "power of 80",
+        "power of 90",
+        "statistical power",
+        "% power",
+        "power calculation"
+      ],
+      [
+        "sample size of",
+        "sample size was",
+        "sample size:",
+        "effect size",
+        "clinically meaningful",
+        "detectable difference",
+        "significance level",
+        "type i error",
+        "alpha of 0.05",
+        "alpha = 0.05"
+      ]
+    ]
   },
   {
     "rule_id": "ICH-E6R3-C-001",
@@ -104,10 +314,27 @@
     "severity": "Critical",
     "requirement": "Protocol must include investigator qualifications section with CVs and training records",
     "extract_instruction": "Find any text mentioning investigator qualifications, investigator CV, curriculum vitae, training records, or investigator credentials.",
-    "fail_conditions": ["no investigator qualifications section found", "no reference to CVs or training records", "section absent from protocol"],
-    "pass_conditions": ["investigator qualifications section present with reference to CVs and training"],
+    "fail_conditions": [
+      "no investigator qualifications section found",
+      "no reference to CVs or training records",
+      "section absent from protocol"
+    ],
+    "pass_conditions": [
+      "investigator qualifications section present with reference to CVs and training"
+    ],
     "regulatory_reference": "ICH E6(R3) Section 2.1.1",
-    "effective_date": "2025-07-23"
+    "effective_date": "2025-07-23",
+    "evidence_anchors": [
+      [
+        "curriculum vitae",
+        " cv ",
+        "cvs ",
+        "investigator cv",
+        "qualifications",
+        "training record",
+        "credentials"
+      ]
+    ]
   },
   {
     "rule_id": "ICH-E6R3-C-002",
@@ -115,10 +342,26 @@
     "severity": "Critical",
     "requirement": "Protocol must include delegation of authority log and staff qualification requirements",
     "extract_instruction": "Find any text mentioning delegation of authority, delegation log, delegated tasks, or staff qualification documentation.",
-    "fail_conditions": ["no delegation of authority section found", "no delegation log or reference", "section absent from protocol"],
-    "pass_conditions": ["delegation of authority log included or referenced", "staff qualification requirements stated"],
+    "fail_conditions": [
+      "no delegation of authority section found",
+      "no delegation log or reference",
+      "section absent from protocol"
+    ],
+    "pass_conditions": [
+      "delegation of authority log included or referenced",
+      "staff qualification requirements stated"
+    ],
     "regulatory_reference": "ICH E6(R3) Section 2.3.3",
-    "effective_date": "2025-07-23"
+    "effective_date": "2025-07-23",
+    "evidence_anchors": [
+      [
+        "delegation of authority",
+        "delegation log",
+        "delegated task",
+        "delegate",
+        "staff qualification"
+      ]
+    ]
   },
   {
     "rule_id": "ICH-E6R3-C-003",
@@ -126,10 +369,34 @@
     "severity": "Major",
     "requirement": "Protocol must include a monitoring plan with frequency, scope, and oversight procedures",
     "extract_instruction": "Find any text mentioning monitoring plan, site monitoring, monitoring visits, monitoring frequency, or study oversight.",
-    "fail_conditions": ["no monitoring plan section found", "monitoring mentioned but no frequency or scope described"],
-    "pass_conditions": ["monitoring plan present with frequency and scope described"],
+    "fail_conditions": [
+      "no monitoring plan section found",
+      "monitoring mentioned but no frequency or scope described"
+    ],
+    "pass_conditions": [
+      "monitoring plan present with frequency and scope described"
+    ],
     "regulatory_reference": "ICH E6(R3) Section B.12.2",
-    "effective_date": "2025-07-23"
+    "effective_date": "2025-07-23",
+    "evidence_anchors": [
+      [
+        "monitoring visit",
+        "site visit",
+        "monitoring frequency",
+        "on-site monitor",
+        "remote monitor",
+        "centralised monitor",
+        "risk-based monitor"
+      ],
+      [
+        "quarterly",
+        "monthly",
+        "annually",
+        "every",
+        "frequency",
+        "scope of monitoring"
+      ]
+    ]
   },
   {
     "rule_id": "ICH-E6R3-C-004",
@@ -137,10 +404,35 @@
     "severity": "Major",
     "requirement": "Protocol must include DSMB charter or reference with composition and procedures",
     "extract_instruction": "Find any text mentioning DSMB, Data Safety Monitoring Board, data monitoring committee, DMC, or safety monitoring charter.",
-    "fail_conditions": ["no DSMB section found", "DSMB mentioned but composition not described", "charter referenced but not described"],
-    "pass_conditions": ["DSMB section present with composition and procedures", "DSMB charter referenced with adequate detail"],
+    "fail_conditions": [
+      "no DSMB section found",
+      "DSMB mentioned but composition not described",
+      "charter referenced but not described"
+    ],
+    "pass_conditions": [
+      "DSMB section present with composition and procedures",
+      "DSMB charter referenced with adequate detail"
+    ],
     "regulatory_reference": "ICH E6(R3) Section 3.9.7",
-    "effective_date": "2025-07-23"
+    "effective_date": "2025-07-23",
+    "evidence_anchors": [
+      [
+        "data safety monitoring board",
+        "dsmb",
+        "data monitoring committee",
+        "dmc",
+        "safety monitoring board"
+      ],
+      [
+        "composition",
+        "charter",
+        "independent",
+        "members",
+        "meeting",
+        "procedure",
+        "terms of reference"
+      ]
+    ]
   },
   {
     "rule_id": "ICH-E6R3-C-005",
@@ -148,9 +440,28 @@
     "severity": "Minor",
     "requirement": "Protocol must include data management procedures covering validation, query resolution, and database lock",
     "extract_instruction": "Find any text mentioning data management, data validation, query resolution, database lock, or data quality procedures.",
-    "fail_conditions": ["no data management section found", "data management mentioned but no validation procedures", "database lock procedure absent"],
-    "pass_conditions": ["data management section covering validation and query resolution present", "database lock procedure described"],
+    "fail_conditions": [
+      "no data management section found",
+      "data management mentioned but no validation procedures",
+      "database lock procedure absent"
+    ],
+    "pass_conditions": [
+      "data management section covering validation and query resolution present",
+      "database lock procedure described"
+    ],
     "regulatory_reference": "ICH E6(R3) Section 4.2",
-    "effective_date": "2025-07-23"
+    "effective_date": "2025-07-23",
+    "evidence_anchors": [
+      [
+        "database lock",
+        "data lock",
+        "lock the database",
+        "data validation",
+        "query resolution",
+        "data cleaning",
+        "edit check",
+        "discrepancy"
+      ]
+    ]
   }
 ]
